@@ -5,12 +5,13 @@ import NewTrip from "./NewTrip";
 import TripHistory from "./TripHistory";
 import Settings from "./Settings";
 import About from "./About";
-
+import EditTrip from "./EditTrip";
 import { colors } from "../utils";
 
 const TripNav = StackNavigator({
   TripHistory: { screen: TripHistory, navigationOptions: { title: "History" } },
-  NewTrip: { screen: NewTrip }
+  NewTrip: { screen: NewTrip },
+  EditTrip: { screen: EditTrip, navigationOptions: { title: "Edit screen" } }
 });
 
 const SettingsNav = StackNavigator({

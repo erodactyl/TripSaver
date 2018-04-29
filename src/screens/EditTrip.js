@@ -3,25 +3,35 @@ import { TextInput, Alert, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import { Container, Picker, Form, Button, Text, View } from "native-base";
 import { Calendar } from "react-native-calendars";
-import { saveTrip } from "../actions/trips";
+import { editTrip, deleteTrip } from "../actions/trips";
 import { colors, getDateString } from "../utils";
 import uuid from "uuid/v4";
 
-const mapDispatchToProps = { saveTrip };
+const mapDispatchToProps = { editTrip, deleteTrip };
 
-class NewTrip extends Component {
+class EditTrip extends Component {
   constructor(props) {
     super(props);
+    const {
+      type: tripType,
+      name,
+      date,
+      saved,
+      trips
+    } = props.navigation.state.params.trip;
     this.date = Date.now();
     this.state = {
-      tripType: "carpooling",
-      name: "",
-      date: getDateString(),
-      carpoolingSaved: "",
-      activeTrips: {
-        start: "",
-        destinations: [{ id: uuid(), name: "" }]
-      }
+      tripType,
+      name,
+      date,
+      carpoolingSaved: saved,
+      activeTrips:
+        tripType === "active"
+          ? trips
+          : {
+              start: "",
+              destinations: [{ id: uuid(), name: "" }]
+            }
     };
   }
   onSubmit = () => {
@@ -35,11 +45,12 @@ class NewTrip extends Component {
         Alert.alert("Please input saved trips");
         return;
       }
-      this.props.saveTrip({
+      this.props.editTrip({
         name,
         type: tripType,
         date,
-        saved: carpoolingSaved
+        saved: carpoolingSaved,
+        id: this.props.navigation.state.params.trip.id
       });
     } else if (tripType === "active") {
       if (!activeTrips.destinations.length) {
@@ -49,7 +60,7 @@ class NewTrip extends Component {
         Alert.alert("Please input start point");
         return;
       }
-      this.props.saveTrip({
+      this.props.editTrip({
         name,
         type: tripType,
         saved: activeTrips.destinations.length,
@@ -57,7 +68,8 @@ class NewTrip extends Component {
           start: activeTrips.start,
           destinations: activeTrips.destinations.filter(el => el.name !== "")
         },
-        date
+        date,
+        id: this.props.navigation.state.params.trip.id
       });
     }
     this.props.navigation.goBack();
@@ -69,6 +81,10 @@ class NewTrip extends Component {
   changeName = name => this.setState({ name });
   addDestDisabled = () =>
     this.state.activeTrips.destinations.some(el => el.name === "");
+  onDelete = () => {
+    this.props.deleteTrip(this.props.navigation.state.params.trip.id);
+    this.props.navigation.goBack();
+  };
   render() {
     const { tripType, name, date, carpoolingSaved, activeTrips } = this.state;
     return (
@@ -157,9 +173,15 @@ class NewTrip extends Component {
         >
           <Text>Submit</Text>
         </Button>
+        <Button
+          onPress={this.onDelete}
+          style={{ backgroundColor: colors.secondary, alignSelf: "center" }}
+        >
+          <Text>Delete</Text>
+        </Button>
       </ScrollView>
     );
   }
 }
 
-export default connect(null, mapDispatchToProps)(NewTrip);
+export default connect(null, mapDispatchToProps)(EditTrip);

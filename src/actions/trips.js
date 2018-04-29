@@ -17,16 +17,57 @@ export const saveTrip = trip => (dispatch, getState) => {
     history,
     settings: { tripsGoal, activeGoal, carpoolingGoal }
   } = getState();
+  const today = history.reduce(
+    (acc, curr) => (curr.date === trip.date ? acc + curr : acc),
+    1
+  );
+  if (today > 20) {
+    Toast.show({
+      text: "OH MY GOD YOU DID 20 TRIPS IN ONE DAY!!",
+      buttonText: "Biggest achiement evah",
+      duration: 5000,
+      posiiton: "top"
+    });
+  }
   const actives = history.reduce(
-    (acc, curr) => (acc + curr.type === "active" ? curr.saved : 0),
+    (acc, curr) =>
+      acc + curr.type === "active" && curr.date === trip.date ? curr.saved : 0,
     0
   );
   const carpoolings = history.reduce(
-    (acc, curr) => (acc + curr.type === "carpooling" ? curr.saved : 0),
+    (acc, curr) =>
+      acc + curr.type === "carpooling" && curr.date === trip.date
+        ? curr.saved
+        : 0,
     0
   );
   const savedTrips = actives + carpoolings;
-  if (savedTrips + trip.saved >= tripsGoal && savedTrips < tripsGoal) {
+  if (savedTrips + trip.saved >= 100 && savedTrips < 100) {
+    Toast.show({
+      text: "Congratulations! 100 trips goal met!",
+      buttonText: "Awesome!",
+      duration: 5000,
+      position: "top"
+    });
+  } else if (savedTrips + trip.saved >= 1000 && savedTrips < 100) {
+    Toast.show({
+      text: "Congratulations! 1000 trips goal met!",
+      buttonText: "Awesome!",
+      duration: 5000,
+      position: "top"
+    });
+  } else if (
+    trip.type === "carpooling" &&
+    carpoolings + trip.saved >= 100 &&
+    carpoolings < 100
+  ) {
+    Toast.show({
+      text: "Carpooler! 100 carpooling goal met!",
+      buttonText: "Awesome!",
+      duration: 5000,
+      position: "top"
+    });
+  } else if (savedTrips + trip.saved >= tripsGoal && savedTrips < tripsGoal) {
     Toast.show({
       text: "Congratulations! Trips goal met!",
       buttonText: "Awesome!",
