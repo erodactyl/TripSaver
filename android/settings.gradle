@@ -1,0 +1,3 @@
+rootProject.name = 'Davtyan_Erik_Trip_Saver_Android'
+
+include ':app'
