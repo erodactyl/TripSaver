@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TextInput, Alert } from "react-native";
+import { TextInput, Alert, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import { Container, Picker, Form, Button, Text, View } from "native-base";
 import { Calendar } from "react-native-calendars";
@@ -35,7 +35,12 @@ class NewTrip extends Component {
         Alert.alert("Please input saved trips");
         return;
       }
-      this.props.saveTrip({ name, tripType, date, saved: carpoolingSaved });
+      this.props.saveTrip({
+        name,
+        type: tripType,
+        date,
+        saved: carpoolingSaved
+      });
     } else if (tripType === "active") {
       if (!activeTrips.destinations.length) {
         Alert.alert("Please input at least one destination");
@@ -46,7 +51,7 @@ class NewTrip extends Component {
       }
       this.props.saveTrip({
         name,
-        tripType,
+        type: tripType,
         saved: activeTrips.length,
         trips: {
           start: activeTrips.start,
@@ -54,6 +59,7 @@ class NewTrip extends Component {
         }
       });
     }
+    this.props.navigation.goBack();
   };
   onTripTypeChange = tripType => this.setState({ tripType });
   selectDate = day => this.setState({ date: day.dateString });
@@ -65,7 +71,7 @@ class NewTrip extends Component {
   render() {
     const { tripType, name, date, carpoolingSaved, activeTrips } = this.state;
     return (
-      <Container>
+      <ScrollView>
         <Picker
           selectedValue={tripType}
           onValueChange={this.onTripTypeChange}
@@ -150,7 +156,7 @@ class NewTrip extends Component {
         >
           <Text>Submit</Text>
         </Button>
-      </Container>
+      </ScrollView>
     );
   }
 }

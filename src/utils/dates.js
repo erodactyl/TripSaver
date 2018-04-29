@@ -1,5 +1,6 @@
-export const sortTripsByDate = trips =>
-  trips.sort((a, b) => (a.date < b.date ? -1 : 1));
+export const sortTripsByDate = trips => {
+  return trips.sort((a, b) => (a.date < b.date ? -1 : 1));
+};
 
 export const getDateString = () => {
   const date = new Date();

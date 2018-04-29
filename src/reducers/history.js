@@ -6,7 +6,8 @@ export default (state = [], action) => {
     case types.INITIALIZE:
       return action.payload.history;
     case types.SAVE_TRIP:
-      return sortTripsByDate([...state, action.payload.trip]);
+      const brr = sortTripsByDate([...state, action.payload.trip]);
+      return brr;
     case types.EDIT_TRIP:
       return state.map(
         el => (el.id === action.payload.trip.id ? action.payload.trip : el)
