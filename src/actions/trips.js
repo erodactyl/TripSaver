@@ -12,7 +12,7 @@ export const initialize = () => async dispatch => {
   }
 };
 
-export const saveTrip = trip => (dispatch, getState) => {
+export const saveTrip = trip => async (dispatch, getState) => {
   const {
     history,
     settings: { tripsGoal, activeGoal, carpoolingGoal }
@@ -28,6 +28,7 @@ export const saveTrip = trip => (dispatch, getState) => {
       duration: 5000,
       posiiton: "top"
     });
+    saveReward("20 trips in one day!");
   }
   const actives = history.reduce(
     (acc, curr) =>
@@ -49,6 +50,7 @@ export const saveTrip = trip => (dispatch, getState) => {
       duration: 5000,
       position: "top"
     });
+    saveReward("100 trips");
   } else if (savedTrips + trip.saved >= 1000 && savedTrips < 100) {
     Toast.show({
       text: "Congratulations! 1000 trips goal met!",
@@ -56,6 +58,7 @@ export const saveTrip = trip => (dispatch, getState) => {
       duration: 5000,
       position: "top"
     });
+    saveReward("1000 trips");
   } else if (
     trip.type === "carpooling" &&
     carpoolings + trip.saved >= 100 &&
@@ -67,6 +70,7 @@ export const saveTrip = trip => (dispatch, getState) => {
       duration: 5000,
       position: "top"
     });
+    saveReward("100 carpoolings");
   } else if (savedTrips + trip.saved >= tripsGoal && savedTrips < tripsGoal) {
     Toast.show({
       text: "Congratulations! Trips goal met!",
@@ -85,6 +89,7 @@ export const saveTrip = trip => (dispatch, getState) => {
       duration: 5000,
       position: "top"
     });
+    saveReward("Carpooling goal met");
   } else if (
     trip.type === "active" &&
     actives + trip.saved >= activeGoal &&
@@ -96,6 +101,7 @@ export const saveTrip = trip => (dispatch, getState) => {
       duration: 5000,
       position: "top"
     });
+    saveReward("Active goal met!");
   }
   dispatch({
     type: types.SAVE_TRIP,
@@ -112,3 +118,15 @@ export const deleteTrip = tripId => ({
   type: types.DELETE_TRIP,
   payload: { tripId }
 });
+
+const saveReward = async text => {
+  const rewardsJSON = await AsyncStorage.getItem("rewards");
+  if (rewardsJSON == null) {
+    const rewards = [text];
+    AsyncStorage.setItem("rewards", JSON.stringify(rewards));
+  } else {
+    const rewards = JSON.parse(rewardsJSON);
+    const added = [...rewards, text];
+    AsyncStorage.setItem(JSON.stringify(added));
+  }
+};

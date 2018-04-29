@@ -6,27 +6,33 @@ import TripHistory from "./TripHistory";
 import Settings from "./Settings";
 import About from "./About";
 import EditTrip from "./EditTrip";
+import Rewards from "./Rewards";
 import { colors } from "../utils";
 
 const TripNav = StackNavigator({
-  TripHistory: { screen: TripHistory, navigationOptions: { title: "History" } },
+  TripHistory: { screen: TripHistory, navigationOptions: { title: "Trips" } },
   NewTrip: { screen: NewTrip },
   EditTrip: { screen: EditTrip, navigationOptions: { title: "Edit screen" } }
 });
 
 const SettingsNav = StackNavigator({
-  Settings: { screen: Settings, navigationOptions: { title: "Settings" } }
+  Settings: { screen: Settings, navigationOptions: { title: "Options" } }
 });
 
 const AboutNav = StackNavigator({
   About: { screen: About, navigationOptions: { title: "About" } }
 });
 
+const RewardsNav = StackNavigator({
+  Rewards: { screen: Rewards, navigationOptions: { title: "Reward" } }
+});
+
 export default TabNavigator(
   {
     Trips: TripNav,
     Settings: SettingsNav,
-    About: AboutNav
+    About: AboutNav,
+    Rewards: RewardsNav
   },
   {
     // navigationOptions: ({ navigation }) => ({
