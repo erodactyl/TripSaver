@@ -36,6 +36,15 @@ class EditTrip extends Component {
   }
   onSubmit = () => {
     const { name, tripType, date, carpoolingSaved, activeTrips } = this.state;
+    if (
+      Math.abs(new Date(date).getTime() - new Date().getTime()) >
+      1000 * 60 * 60 * 24 * 2
+    ) {
+      Alert.alert(
+        "Sorry, you can't edit trips with 2 days difference. You can always delete it if you want."
+      );
+      return;
+    }
     if (!name) {
       Alert.alert("Please input name");
       return;
